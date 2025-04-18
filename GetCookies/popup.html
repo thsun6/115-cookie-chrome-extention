@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>115登录Cookie捕获器</title>
+  <style>
+    body { font-family: sans-serif; min-width: 320px; margin: 16px; }
+    h2 { font-size: 1.1em; margin-bottom: 8px; }
+    #cookie-list { word-break: break-all; background: #f7f7f7; padding: 8px; border-radius: 4px; margin-bottom: 12px; max-height: 200px; overflow-y: auto; }
+    button { margin-right: 8px; }
+    #status { color: #888; font-size: 0.95em; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h2>115.com 登录Cookie</h2>
+  <div id="cookie-list">加载中...</div>
+  <button id="refresh">刷新</button>
+  <button id="copy">一键复制</button>
+  <hr style="margin:12px 0;">
+  <button id="get-qrcode">获取扫码二维码</button>
+  <div id="qrcode" style="margin:12px 0;"></div>
+  <button id="show-token" disabled>显示 登录Token</button>
+  <button id="copy-token" disabled>复制 登录Token</button>
+  <div id="token-display" style="word-break: break-all; margin:8px 0; display:none;"></div>
+  <div id="qr-status" style="color:#0070c9;font-size:0.98em;"></div>
+  <div id="status"></div>
+  <script src="qrcode.min.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html> 

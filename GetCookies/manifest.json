@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "115登录Cookie捕获器",
+  "version": "1.0.0",
+  "description": "自动捕获并展示115.com登录cookie的Chrome插件。",
+  "permissions": [
+    "cookies",
+    "storage",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "https://115.com/*",
+    "https://*.115.com/*",
+    "https://qrcodeapi.115.com/*",
+    "https://passportapi.115.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icon16.png",
+      "32": "icon32.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icon16.png",
+    "32": "icon32.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://115.com/*",
+        "https://*.115.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+} 
