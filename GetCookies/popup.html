@@ -4,11 +4,40 @@
   <meta charset="UTF-8">
   <title>115登录Cookie捕获器</title>
   <style>
-    body { font-family: sans-serif; min-width: 320px; margin: 16px; }
+    body { font-family: sans-serif; min-width: 400px; margin: 16px; }
     h2 { font-size: 1.1em; margin-bottom: 8px; }
+    h3 { font-size: 1.0em; margin: 12px 0 6px 0; color: #333; }
     #cookie-list { word-break: break-all; background: #f7f7f7; padding: 8px; border-radius: 4px; margin-bottom: 12px; max-height: 200px; overflow-y: auto; }
     button { margin-right: 8px; }
     #status { color: #888; font-size: 0.95em; margin-top: 8px; }
+    .data-display {
+      background: #f0f8ff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 8px;
+      margin: 8px 0;
+      max-height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.85em;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+    .field-item {
+      margin: 4px 0;
+      padding: 2px 0;
+      border-bottom: 1px dotted #ddd;
+    }
+    .field-name {
+      font-weight: bold;
+      color: #0066cc;
+      display: inline-block;
+      min-width: 120px;
+    }
+    .field-value {
+      color: #333;
+      word-break: break-all;
+    }
   </style>
 </head>
 <body>
@@ -21,6 +50,19 @@
   <div id="qrcode" style="margin:12px 0;"></div>
 
   <div id="qr-status" style="color:#0070c9;font-size:0.98em;"></div>
+
+  <!-- 扫描阶段数据显示 -->
+  <div id="qrcode-token-section" style="display:none;">
+    <h3>二维码Token数据</h3>
+    <div id="qrcode-token-display" class="data-display"></div>
+  </div>
+
+  <!-- 登录结果数据显示 -->
+  <div id="login-data-section" style="display:none;">
+    <h3>登录结果数据</h3>
+    <div id="login-data-display" class="data-display"></div>
+  </div>
+
   <div id="status"></div>
   <script src="qrcode.min.js"></script>
   <script src="popup.js"></script>

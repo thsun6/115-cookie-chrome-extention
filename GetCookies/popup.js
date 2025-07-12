@@ -5,8 +5,15 @@ const refreshBtn = document.getElementById('refresh');
 const copyBtn = document.getElementById('copy');
 const statusDiv = document.getElementById('status');
 const getQrcodeBtn = document.getElementById('get-qrcode');
+
 const qrcodeDiv = document.getElementById('qrcode');
 const qrStatusDiv = document.getElementById('qr-status');
+
+// 数据显示元素
+const qrcodeTokenSection = document.getElementById('qrcode-token-section');
+const qrcodeTokenDisplay = document.getElementById('qrcode-token-display');
+const loginDataSection = document.getElementById('login-data-section');
+const loginDataDisplay = document.getElementById('login-data-display');
 
 
 
@@ -14,6 +21,52 @@ let polling = false;
 let pollTimer = null;
 let lastPayload = null;
 let loginData = null;
+
+// 显示数据的辅助函数
+function displayObjectData(obj, container) {
+  if (!obj || !container) return;
+
+  let html = '';
+
+  function formatValue(value, depth = 0) {
+    if (value === null) return '<span style="color: #999;">null</span>';
+    if (value === undefined) return '<span style="color: #999;">undefined</span>';
+    if (typeof value === 'string') {
+      return `<span style="color: #d14;">"${value}"</span>`;
+    }
+    if (typeof value === 'number') {
+      return `<span style="color: #099;">${value}</span>`;
+    }
+    if (typeof value === 'boolean') {
+      return `<span style="color: #0086b3;">${value}</span>`;
+    }
+    if (typeof value === 'object') {
+      if (Array.isArray(value)) {
+        if (value.length === 0) return '[]';
+        const indent = '  '.repeat(depth + 1);
+        const items = value.map(item => `${indent}${formatValue(item, depth + 1)}`).join(',\n');
+        return `[\n${items}\n${'  '.repeat(depth)}]`;
+      } else {
+        const keys = Object.keys(value);
+        if (keys.length === 0) return '{}';
+        const indent = '  '.repeat(depth + 1);
+        const items = keys.map(key => `${indent}"${key}": ${formatValue(value[key], depth + 1)}`).join(',\n');
+        return `{\n${items}\n${'  '.repeat(depth)}}`;
+      }
+    }
+    return String(value);
+  }
+
+  const keys = Object.keys(obj);
+  for (const key of keys) {
+    html += `<div class="field-item">`;
+    html += `<span class="field-name">${key}:</span> `;
+    html += `<span class="field-value">${formatValue(obj[key])}</span>`;
+    html += `</div>`;
+  }
+
+  container.innerHTML = html;
+}
 
 
 function renderCookies(cookies) {
@@ -78,7 +131,11 @@ async function startQrcodeLogin() {
   getQrcodeBtn.disabled = true;
   qrStatusDiv.textContent = '正在获取二维码...';
   qrcodeDiv.innerHTML = '';
-  
+
+  // 隐藏数据显示区域
+  qrcodeTokenSection.style.display = 'none';
+  loginDataSection.style.display = 'none';
+
   console.log('[115插件] popup.js: 请求二维码token');
   
   // 1. 获取二维码token
@@ -99,8 +156,12 @@ async function startQrcodeLogin() {
     chrome.storage.local.set({
       'qrcode_payload': lastPayload
     });
-    
+
     console.log('[115插件] popup.js: 二维码token数据', token);
+
+    // 显示二维码token数据
+    displayObjectData(token, qrcodeTokenDisplay);
+    qrcodeTokenSection.style.display = 'block';
     
     // 2. 渲染二维码图片
     try {
@@ -139,7 +200,7 @@ function pollQrcodeStatusLoop() {
       pollTimer = setTimeout(pollQrcodeStatusLoop, 1500);
     } else if (status === 2) {
       qrStatusDiv.textContent = '扫码成功，正在获取登录结果...';
-      
+
       // 获取扫码登录结果并保存
       chrome.runtime.sendMessage({ action: 'post_qrcode_result', payload: lastPayload, app: 'web' }, (resp2) => {
         if (!resp2 || !resp2.data || !resp2.data.data || !resp2.data.data.cookie) {
@@ -152,6 +213,12 @@ function pollQrcodeStatusLoop() {
         // 保存登录数据
         loginData = resp2.data.data;
         chrome.storage.local.set({ 'login_data': loginData });
+
+        console.log('[115插件] popup.js: 完整登录结果数据', loginData);
+
+        // 显示登录结果数据
+        displayObjectData(loginData, loginDataDisplay);
+        loginDataSection.style.display = 'block';
         
         // 注入cookie
         chrome.runtime.sendMessage({ action: 'inject_cookies', cookies: resp2.data.data.cookie }, (resp3) => {
@@ -203,6 +270,8 @@ getQrcodeBtn.onclick = () => {
   }
   startQrcodeLogin();
 };
+
+
 
 
 
