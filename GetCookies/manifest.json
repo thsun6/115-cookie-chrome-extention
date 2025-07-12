@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "115登录Cookie捕获器",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "自动捕获并展示115.com登录cookie的Chrome插件。",
   "permissions": [
     "cookies",
